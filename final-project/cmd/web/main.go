@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"final-project/data"
 	"fmt"
 	"log"
 	"net/http"
@@ -43,6 +44,7 @@ func main() {
 		InfoLog:  infoLog,
 		ErrorLog: errorLog,
 		Wait:     &wg,
+		Models:   data.New(db),
 	}
 
 	// listen for signals
