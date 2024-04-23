@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"time"
 
@@ -61,6 +62,29 @@ func (u *User) GetByEmail(email string) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	// get plan, if any
+	query = `select p.id, p.plan_name, p.plan_amount, p.created_at, p.updated_at from 
+			plans p
+			left join user_plans up on (p.id = up.plan_id)
+			where up.user_id = $1`
+
+	var plan Plan
+	row = db.QueryRowContext(ctx, query, user.ID)
+
+	err = row.Scan(
+		&plan.ID,
+		&plan.PlanName,
+		&plan.PlanAmount,
+		&plan.CreatedAt,
+		&plan.UpdatedAt,
+	)
+
+	if err == nil {
+		user.Plan = &plan
+	}
+
+	fmt.Println(user.Plan)
 
 	return &user, nil
 }
