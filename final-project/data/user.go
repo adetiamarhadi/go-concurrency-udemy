@@ -114,12 +114,12 @@ func (u *User) GetOne(id int) (*User, error) {
 	return &user, nil
 }
 
-func (u *User) Update() error {
+func (u *User) Update(user User) error {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
 	stmt := `update users set email = $1, first_name = $2, last_name = $3, user_active = $4, updated_at = $5 where id = $6`
-	_, err := db.ExecContext(ctx, stmt, u.Email, u.FirstName, u.LastName, u.Active, time.Now(), u.ID)
+	_, err := db.ExecContext(ctx, stmt, user.Email, user.FirstName, user.LastName, user.Active, time.Now(), user.ID)
 	if err != nil {
 		return err
 	}
